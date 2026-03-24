@@ -6,7 +6,7 @@ class Point
 {
     double x, y;
 public:
-    Point(double x,  double y);
+    Point(double x = 0,  double y = 0);
 
     double getX() const;
     double getY() const;

@@ -1,6 +1,6 @@
 #include "point.hpp"
 
-Point::Point(double x = 0, double y = 0) : x(x), y(y) 
+Point::Point(double x, double y) : x(x), y(y) 
 {}
 
 double Point::getX() const
