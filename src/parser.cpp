@@ -1,6 +1,6 @@
 #include <parser.hpp>
 
-Parser::Parser(const std::string &s) : expression(s)
+Parser::Parser(std::string s) : expression(std::move(s))
 {}
 
 double Parser::evaluate(double x)

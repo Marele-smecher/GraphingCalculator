@@ -17,7 +17,7 @@ void Function::generatePoints(double minX, double maxX, double step)
 
     for (double x = minX; x <= maxX; x += step) {
         double y = parser.evaluate(x); 
-        points.push_back(Point(x, y));
+        points.emplace_back(Point(x, y));
     }
 
     pointCount = points.size();

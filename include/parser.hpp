@@ -7,11 +7,11 @@ class Parser
     std::string expression;
 public:
     Parser() = default;
-    Parser(const std::string &s);
+    explicit Parser(std::string s);
 
     double evaluate(double x);
     void setExpression(const std::string &s);
-    std::string getExpression() const;
+    [[nodiscard]]  std::string getExpression() const;
 
     Parser& operator=(const Parser &p);
 };
