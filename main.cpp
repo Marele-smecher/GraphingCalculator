@@ -30,7 +30,7 @@ int main()
                 double x = std::stod(line,nullptr);
                 std::cout << parser.evaluate(x) << "\n";
             }
-        } else if (line == "quit") {
+        } else{
             break;
         }
     }
