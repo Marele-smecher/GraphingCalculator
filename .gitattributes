@@ -1,2 +1,7 @@
 generated/** linguist-generated
 ext/** linguist-vendored
+CMakeLists.txt linguist-documentation
+*.cmake linguist-documentation
+**/cmake/* linguist-documentation
+*.sh linguist-documentation
+scripts/* linguist-documentation
