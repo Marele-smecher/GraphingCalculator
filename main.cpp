@@ -5,7 +5,7 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "graph.hpp"
+#include <graph.hpp>
 
 constexpr uint32_t SCR_WIDTH = 800;
 constexpr uint32_t SCR_HEIGHT = 600;
