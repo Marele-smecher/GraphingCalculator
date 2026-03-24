@@ -1,6 +1,6 @@
 #include <function.hpp>
 
-Function::Function(const std::string &s, int x) : parser(s), pointCount(x), point(), expressionName(s) 
+Function::Function(const std::string &s, int x) : parser(s), pointCount(x), points(), expressionName(s) 
 {
     generatePoints(-10, 10, 0.1);
 }
