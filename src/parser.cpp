@@ -1,4 +1,4 @@
-#include "parser.hpp"
+#include <parser.hpp>
 
 Parser::Parser(const std::string &s) : expression(s)
 {}
