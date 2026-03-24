@@ -1,7 +1,6 @@
-generated/** linguist-generated
 ext/** linguist-vendored
-CMakeLists.txt linguist-documentation
-*.cmake linguist-documentation
-**/cmake/* linguist-documentation
-*.sh linguist-documentation
-scripts/* linguist-documentation
+*.pro linguist-vendored
+*.user linguist-vendored
+*.txt linguist-vendored
+LICENSE linguist-generated=true
+README.md linguist-generated=true
