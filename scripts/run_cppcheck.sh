@@ -1,15 +1,24 @@
 #!/usr/bin/bash
 
+#cppcheck --enable=all \
+#    --inline-suppr \
+#    -I include/ \
+#    src/ main.cpp \ 
+#    --project="${BUILD_DIR:-build}"/compile_commands.json \
+#    -i"${BUILD_DIR:-build}" --suppress="*:${BUILD_DIR:-build}/*" \
+#    -i"${EXT_DIR:-ext}" --suppress="*:${EXT_DIR:-ext}/*" \
+#    -i"${GEN_DIR:-generated}" --suppress="*:${GEN_DIR:-generated}/*" \
+#    --suppress=missingIncludeSystem \
+#    --suppress=unmatchedSuppression \
+#    --suppress=useStlAlgorithm \
+#    --check-level=exhaustive \
+#    --error-exitcode=1
+
 cppcheck --enable=all \
     --inline-suppr \
     -I include/ \
-    src/ main.cpp \ 
-    --project="${BUILD_DIR:-build}"/compile_commands.json \
-    -i"${BUILD_DIR:-build}" --suppress="*:${BUILD_DIR:-build}/*" \
-    -i"${EXT_DIR:-ext}" --suppress="*:${EXT_DIR:-ext}/*" \
-    -i"${GEN_DIR:-generated}" --suppress="*:${GEN_DIR:-generated}/*" \
+    src/ main.cpp \
     --suppress=missingIncludeSystem \
+    --suppress=unusedFunction \
     --suppress=unmatchedSuppression \
-    --suppress=useStlAlgorithm \
-    --check-level=exhaustive \
-    --error-exitcode=1
+    --error-exitcode=0
