@@ -13,7 +13,7 @@ class Function
 public:
     Function() = default;
     Function(const std::string& s, int x);
-    Function(const Function& F);
+    // Function(const Function& F);
 
     void clearPoints();
     void generatePoints(double minX, double maxX, double step);
