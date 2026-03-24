@@ -2,6 +2,8 @@
 
 cppcheck --enable=all \
     --inline-suppr \
+    -I include/ \
+    src/ main.cpp \ 
     --project="${BUILD_DIR:-build}"/compile_commands.json \
     -i"${BUILD_DIR:-build}" --suppress="*:${BUILD_DIR:-build}/*" \
     -i"${EXT_DIR:-ext}" --suppress="*:${EXT_DIR:-ext}/*" \
