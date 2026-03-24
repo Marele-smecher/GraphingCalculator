@@ -5,8 +5,7 @@ Parser::Parser(const std::string &s) : expression(s)
 
 double Parser::evaluate(double x)
 {
-    x = x + 1;
-    return 0;
+    return x * x;
 }
 
 std::string Parser::getExpression() const
