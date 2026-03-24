@@ -11,5 +11,7 @@ public:
 
     double evaluate(double x);
     void setExpression(const std::string &s);
+    std::string getExpression() const;
 
+    Parser& operator=(const Parser &p);
 };
