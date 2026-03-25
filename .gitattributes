@@ -1,6 +1,10 @@
-ext/** linguist-vendored
 *.pro linguist-vendored
 *.user linguist-vendored
 *.txt linguist-vendored
+ext/** linguist-vendored
+* text=auto eol=lf
+cmake/** linguist-vendored
+cmake/ export-ignore
+scripts/** linguist-vendored
 LICENSE linguist-generated=true
 README.md linguist-generated=true

@@ -62,7 +62,6 @@ endif()
 # NOTE: update executable name in .github/workflows/cmake.yml:25 when changing name here
 add_executable(${MAIN_EXECUTABLE_NAME}
     main.cpp
-    generated/src/Helper.cpp
     src/function.cpp
     src/graph.cpp
     src/parser.cpp
