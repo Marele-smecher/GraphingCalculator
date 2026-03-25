@@ -2,6 +2,7 @@
 #include <parser.hpp>
 #include <cmath>
 #include <stdexcept>
+#include <ostream>
 
 Parser::Parser(std::string s) : expression(std::move(s))
 {}
