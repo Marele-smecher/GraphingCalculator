@@ -7,16 +7,16 @@ class Graph
 {
     sf::RenderWindow window;
     Function currentFunction;
+    double a; /// we'll see the grid [-a, a] * [-a, a]
+    float scale;
 
-    float zoomScale;
-    sf::Vector2f originOffset;
-    void updateView();
-public:
-    Graph(uint32_t w, uint32_t h, const std::string& title);
-
-    void render();
     void handleInput();
+    void render();
+public:
+    Graph(uint32_t w, uint32_t h, double a, const std::string& title);
+
     void run();
+    void setFunction(const std::string &s);
 
     ~Graph() = default;
 };
