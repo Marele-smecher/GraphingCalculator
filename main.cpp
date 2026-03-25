@@ -10,11 +10,14 @@ int main()
 {
     std::cout << "Graphing calculator\n";
 
+    std::cout << "Welcome to graphing calculator!!!\n";
+
     std::string expr, line;
 
     std::cout << "Enter a valid expression(only \'(\', \')\', \'+\',  \'-\',  \'*\',  \'/\',  \'x\'):\n";
     std::getline(std::cin, expr);
     std::cout << "Enter how big you want the graph to be:\n";
+    std::cout << "You'll still be able to adjust the size with NumpadPlus and NumpadMinus\n";
     std::getline(std::cin, line);
     const double a = std::stod(line);
     Graph grapher(SCR_WIDTH, SCR_HEIGHT, a, "Graphing Calculator");
