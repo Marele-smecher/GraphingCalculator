@@ -1,10 +1,6 @@
-CMakeLists.txt linguist-documentation
-*.cmake linguist-documentation
-script.sh linguist-documentation
-scripts/** linguist-documentation
-
-tastatura.txt linguist-documentation
-*.txt linguist-documentation
-
-LICENSE linguist-documentation
-README.md linguist-documentation
+ext/** linguist-vendored
+*.pro linguist-vendored
+*.user linguist-vendored
+*.txt linguist-vendored
+LICENSE linguist-generated=true
+README.md linguist-generated=true
