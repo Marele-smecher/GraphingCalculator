@@ -26,11 +26,11 @@ void Graph::handleInput()
             if  (keyPressed->scancode == sf::Keyboard::Scancode::Escape) {
                 window.close();
             } else if (keyPressed->scancode == sf::Keyboard::Scancode::NumpadPlus) {
-                if (a == 1) return;
-                a -= 1;
+                if (a <= 1) return;
+                a -= 0.25;
                 std::cout << a << "\n";
             } else if (keyPressed->scancode == sf::Keyboard::Scancode::NumpadMinus) {
-                a += 1;
+                a += 0.25;
                 std::cout << a << "\n";
             }
         }
