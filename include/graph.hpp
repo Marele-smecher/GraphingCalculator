@@ -1,5 +1,6 @@
 #pragma once
 
+#include <ostream>
 #include <SFML/Graphics.hpp>
 #include "function.hpp"
 
@@ -18,5 +19,7 @@ public:
     void run();
     void setFunction(const std::string &s);
 
-    ~Graph() = default;
+    friend std::ostream& operator<<(std::ostream &out, const Graph &g);
+
+    ~Graph();
 };

@@ -4,7 +4,6 @@
 Function::Function(const std::string &s, double a) : parser(s), points(), expressionName(s), a(a)
 {
     generatePoints(-a, a, 0.01);
-    std::cout << *this << "\n";
 }
 
 Function::Function(const Function &F) 
@@ -37,7 +36,7 @@ Function& Function::operator=(const Function &f)
 
 std::ostream& operator<<(std::ostream &out, const Function &F)
 {
-    out << "Function: " << F.expressionName << "\nPoints:\n";
+    out << "Function: " << F.parser << "\nPoints:\n";
     for (const auto& p : F.points) {
         out << p << "\n"; 
     }
@@ -57,6 +56,9 @@ void Function::generatePoints(double minX, double maxX, double step)
     }
 }
 
-
+Function::~Function()
+{
+    std::cout << "Destructing function with expression: " << expressionName << "\n";
+}
 
 

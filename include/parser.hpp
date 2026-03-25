@@ -18,4 +18,5 @@ public:
     // static bool valid(const std::string &s);
 
     Parser& operator=(const Parser &p);
+    friend std::ostream& operator<<(std::ostream &out, const Parser &parser);
 };

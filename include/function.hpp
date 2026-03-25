@@ -16,7 +16,6 @@ public:
     Function() = default;
     explicit Function(const std::string& s, double a = 5);
     Function(const Function &F);
-    // Function(const Function& F);
 
     [[nodiscard]] std::string getExpression() const;
     [[nodiscard]] std::vector<Point> getPoints() const;
@@ -25,5 +24,5 @@ public:
     friend std::ostream& operator<<(std::ostream& out, const Function &F);
     Function& operator=(const Function& F);
 
-    ~Function() = default;
+    ~Function();
 };

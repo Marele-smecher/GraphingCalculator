@@ -115,3 +115,9 @@ Parser& Parser::operator=(const Parser &p)
     }
     return *this;
 }
+
+std::ostream& operator<<(std::ostream &out, const Parser &p)
+{
+    out << p.expression;
+    return out;
+}

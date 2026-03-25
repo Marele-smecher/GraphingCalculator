@@ -2,6 +2,7 @@
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Window/Keyboard.hpp>
 #include <iostream>
+#include <ostream>
 
 Graph::Graph(uint32_t w, uint32_t h, double a, const std::string &title)
     : window(sf::VideoMode({w, h}), title, sf::State::Windowed),
@@ -13,6 +14,7 @@ Graph::Graph(uint32_t w, uint32_t h, double a, const std::string &title)
 void Graph::setFunction(const std::string &s)
 {
     currentFunction = Function(s, a);
+    std::cout << currentFunction << "\n";
 }
 
 void Graph::handleInput()
@@ -100,4 +102,15 @@ void Graph::run()
         /// Draw
         render();
     }
+}
+
+std::ostream& operator<<(std::ostream &out, const Graph &g)
+{
+    out << g.currentFunction << "\n" <<  g.a << "\n" << g.scale;
+    return out;
+}
+
+Graph::~Graph()
+{
+
 }

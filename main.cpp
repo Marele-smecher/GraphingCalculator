@@ -18,6 +18,7 @@ int main()
     std::getline(std::cin, line);
     const double a = std::stod(line);
     Graph grapher(SCR_WIDTH, SCR_HEIGHT, a, "Graphing Calculator");
+    std::cout << grapher << "\n";
     grapher.setFunction(expr);
     grapher.run();
     
