@@ -1,5 +1,7 @@
 # Graphing calculator
 
+Program care afiseaza interpretarea grafica a unor functii matematice(deocamdata numai functii polinomiale/rationale).
+
 ### Folosiți template-ul corespunzător grupei voastre!
 
 | Laborant  | Link template                                |
