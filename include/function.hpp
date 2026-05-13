@@ -4,6 +4,60 @@
 #include "parser.hpp"
 #include <vector>
 
+class MathFunction
+{
+    static int totalFunctions; 
+protected:
+    virtual void print(std::ostream& os) const;
+public:
+    MathFunction();
+
+    [[nodiscard]] virtual double evaluate(double x) const = 0;
+    [[nodiscard]] virtual MathFunction* clone() const = 0;
+    friend std::ostream& operator<<(std::ostream& out, const MathFunction& f);
+
+    virtual ~MathFunction() = 0;
+};
+
+class ParsedFunction : public MathFunction
+{
+    Parser p; 
+    std::string expressionName;
+public:
+    [[nodiscard]] double evaluate(double x) const override;
+    [[nodiscard]] MathFunction* clone() const override;
+    void print(std::ostream& os) const override;
+};
+
+class PolynomialFunction : public MathFunction
+{
+    std::vector<double> coeff;
+public:
+    [[nodiscard]] double evaluate(double x) const override;
+    [[nodiscard]] MathFunction* clone() const override;
+    void print(std::ostream& os) const override;
+};
+
+class ExponentialFunction : public MathFunction
+{
+    double base, exponent;
+public:
+    [[nodiscard]] double evaluate(double x) const override;
+    [[nodiscard]] MathFunction* clone() const override;
+    void print(std::ostream& os) const override;
+};
+
+/*
+class TrigonometricFunction : public MathFunction
+{
+    std::string functionType;
+    double amplitude, frequency;
+public:
+    double evaluate(double x) const;
+    MathFunction* clone() const;
+    void print(std::ostream& os) const;
+};*/
+
 class Function
 {
     Parser parser;
