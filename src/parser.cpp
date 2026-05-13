@@ -99,6 +99,18 @@ double Parser::evaluate(double x)
     return result;
 }
 
+bool Parser::isValid(const std::string &s)
+{
+    int balance = 0;
+    for (char c : s) {
+        if (c == '(') balance++;
+        else if (c == ')') balance--;
+        
+        if (balance < 0) return false; 
+    }
+    return balance == 0; 
+}
+
 std::string Parser::getExpression() const
 {
     return expression;

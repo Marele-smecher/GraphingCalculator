@@ -15,7 +15,7 @@ public:
     double evaluate(double x);
     void setExpression(const std::string &s);
     [[nodiscard]]  std::string getExpression() const;
-    // static bool valid(const std::string &s);
+    static bool isValid(const std::string &s);
 
     Parser& operator=(const Parser &p);
     friend std::ostream& operator<<(std::ostream &out, const Parser &parser);
