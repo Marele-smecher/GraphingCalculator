@@ -82,7 +82,7 @@ void TrigonometricFunction::print(std::ostream& os) const
 {
     os << amplitude << " * " << functionType << "(" << frequency << " * x)";
 }
-/*
+
 ExponentialFunction::ExponentialFunction(double b, double exp)
     : MathFunction(), base(b), exponent(exp) {}
 
@@ -101,4 +101,3 @@ void ExponentialFunction::print(std::ostream& os) const
 {
     os << base << "^(" << exponent << " * x)";
 }
-*/
