@@ -2,12 +2,13 @@
 
 #include <ostream>
 #include <SFML/Graphics.hpp>
+#include <memory>
 #include "function.hpp"
 
 class Graph
 {
     sf::RenderWindow window;
-    std::vector<MathFunction*> functions;
+    std::vector<std::unique_ptr<MathFunction>> functions;
     float scale;
     sf::Vector2f range;
     sf::Vector2f center;

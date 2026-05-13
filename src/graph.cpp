@@ -4,6 +4,7 @@
 #include <SFML/Window/Keyboard.hpp>
 #include <function.hpp>
 #include <iostream>
+#include <memory>
 #include <ostream>
 #include <cmath>
 
@@ -22,8 +23,8 @@ Graph::Graph(const Graph &g)
     : window(sf::VideoMode({800, 600}), "Graph Copy", sf::State::Windowed), 
       scale(g.scale), range(g.range), center(g.center)
 {
-    for (auto f : g.functions) {
-        functions.push_back(f->clone());
+    for (const auto &f : g.functions) {
+        functions.push_back(std::unique_ptr<MathFunction>(f->clone()));
     }
 }
 
@@ -42,11 +43,7 @@ void swap(Graph &first, Graph &second) noexcept
 }
 
 Graph::~Graph()
-{
-    for (auto w : functions) {
-        delete w;
-    }
-}
+{}
 
 std::ostream& operator<<(std::ostream &out, const Graph &g)
 {
@@ -59,7 +56,7 @@ std::ostream& operator<<(std::ostream &out, const Graph &g)
 
 void Graph::addFunction(MathFunction *f)
 {
-    functions.push_back(f);
+    functions.push_back(std::unique_ptr<MathFunction>(f));
 }
 
 void Graph::handleInput()
@@ -165,14 +162,14 @@ void Graph::render()
 
     const float step = (range.y - range.x) / width;
 
-    for (auto f : functions) {
+    for (const auto &f : functions) {
         
         sf::Color plotColor = sf::Color::Red;
-        if (dynamic_cast<TrigonometricFunction*>(f)) {
+        if (dynamic_cast<TrigonometricFunction*>(f.get())) {
             plotColor = sf::Color::Blue;
-        } else if (dynamic_cast<ParsedFunction*>(f)) {
+        } else if (dynamic_cast<ParsedFunction*>(f.get())) {
             plotColor = sf::Color::Green;
-        } else if (dynamic_cast<ExponentialFunction*>(f)) {
+        } else if (dynamic_cast<ExponentialFunction*>(f.get())) {
             plotColor = sf::Color::Magenta;
         }
 
