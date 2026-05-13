@@ -1,8 +1,9 @@
 #include <cctype>
-#include <parser.hpp>
 #include <cmath>
 #include <stdexcept>
 #include <ostream>
+#include "parser.hpp"
+#include "exceptions.hpp"
 
 Parser::Parser(std::string s) : expression(std::move(s))
 {}
@@ -41,7 +42,7 @@ double Parser::parseTerm(size_t &i, double x) // NOLINT(misc-no-recursion)
         if (op == '*') {
             ans *= nextFactor;
         } else {
-            if (std::abs(nextFactor) < 1e-9) return std::nan("");
+            if (std::abs(nextFactor) < 1e-9) throw DomainException(x);
             ans /= nextFactor;
         }
     }
