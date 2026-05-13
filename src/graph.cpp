@@ -1,20 +1,62 @@
 #include "graph.hpp"
+#include "exceptions.hpp"
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Window/Keyboard.hpp>
+#include <function.hpp>
 #include <iostream>
+#include <memory>
 #include <ostream>
+#include <cmath>
 
 Graph::Graph(uint32_t w, uint32_t h, double a, const std::string &title)
     : window(sf::VideoMode({w, h}), title, sf::State::Windowed),
-      a(a), scale(static_cast<float>(w) / (2.0f * static_cast<float>(a)))
+     center(0.0f, 0.0f)
 {
-    
+    if (!window.isOpen()) throw RenderInitException();
+
+    range.x = static_cast<float>(-a);
+    range.y = static_cast<float>(a);    
+    scale = static_cast<float>(w) / (range.y - range.x);
 }
 
-void Graph::setFunction(const std::string &s)
+Graph::Graph(const Graph &g) 
+    : window(sf::VideoMode({800, 600}), "Graph Copy", sf::State::Windowed), 
+      scale(g.scale), range(g.range), center(g.center)
 {
-    currentFunction = Function(s, a);
-    std::cout << currentFunction << "\n";
+    for (const auto &f : g.functions) {
+        functions.push_back(std::unique_ptr<MathFunction>(f->clone()));
+    }
+}
+
+Graph& Graph::operator=(Graph other)
+{
+    swap(*this, other);
+    return *this;
+}
+
+void swap(Graph &first, Graph &second) noexcept
+{
+    std::swap(first.functions, second.functions);
+    std::swap(first.range, second.range);
+    std::swap(first.center, second.center);
+    std::swap(first.scale, second.scale);
+}
+
+Graph::~Graph()
+{}
+
+std::ostream& operator<<(std::ostream &out, const Graph &g)
+{
+    out << "Settings: a=" << g.range.x << ", " << g.range.y << ", scale=" << g.scale << "\nFunctions:\n";
+    for (const auto& f : g.functions) {
+        out << " - " << *f << "\n"; 
+    }
+    return out;
+}
+
+void Graph::addFunction(MathFunction *f)
+{
+    functions.push_back(std::unique_ptr<MathFunction>(f));
 }
 
 void Graph::handleInput()
@@ -23,16 +65,40 @@ void Graph::handleInput()
         if (event->is<sf::Event::Closed>()) {
             window.close();
         } else if (const auto *keyPressed = event->getIf<sf::Event::KeyPressed>()) {
+            float movWidth = (range.y - range.x);
+            float moveSpeed = movWidth * 0.05f;
+
             if  (keyPressed->scancode == sf::Keyboard::Scancode::Escape) {
                 window.close();
             } else if (keyPressed->scancode == sf::Keyboard::Scancode::NumpadPlus) {
-                if (a <= 1) return;
-                a -= 0.25;
-                std::cout << a << "\n";
+                if (movWidth <= 1) return;
+                range.x += movWidth * 0.1f;
+                range.y -= movWidth * 0.1f;
+                std::cout << range.x << " " << range.y << "\n";
             } else if (keyPressed->scancode == sf::Keyboard::Scancode::NumpadMinus) {
-                a += 0.25;
-                std::cout << a << "\n";
+                range.x -= movWidth * 0.1f;
+                range.y += movWidth * 0.1f;
+                std::cout << range.x << " " << range.y << "\n";
+            } else if (keyPressed->scancode == sf::Keyboard::Scancode::Right) {
+                range.x += moveSpeed;
+                range.y += moveSpeed;
+                center.x += moveSpeed;
+            } else if (keyPressed->scancode == sf::Keyboard::Scancode::Up) {
+                center.y += moveSpeed; 
+            } else if (keyPressed->scancode == sf::Keyboard::Scancode::Left) {
+                range.x -= moveSpeed;
+                range.y -= moveSpeed;
+                center.x -= moveSpeed;
+            } else if (keyPressed->scancode == sf::Keyboard::Scancode::Down) {
+                center.y -= moveSpeed;
             }
+            
+            /*
+                Right,          //!< Keyboard Right Arrow key
+    Left,           //!< Keyboard Left Arrow key
+    Down,           //!< Keyboard Down Arrow key
+    Up,             //!< Keyboard Up Arrow key
+*/
         }
     }
 }
@@ -44,50 +110,110 @@ void Graph::render()
     sf::Vector2u size = window.getSize();
     const auto width = static_cast<float>(size.x);
     const auto height = static_cast<float>(size.y);
-    const float midX = width / 2.0f;
     const float midY = height / 2.0f;
     
-    scale = static_cast<float>(width) / (2.0f * static_cast<float>(a));
+    scale = width / (range.y - range.x);
+
+    sf::Color gridColor(220, 220, 220); 
+
+    int startX = static_cast<int>(std::ceil(range.x));
+    int endX = static_cast<int>(std::floor(range.y));
+    
+    for (int i = startX; i <= endX; ++i) {
+        float x_screen = (i - range.x) * scale;
+        sf::VertexArray vLine(sf::PrimitiveType::Lines, 2);
+        vLine[0].position = sf::Vector2f(x_screen, 0);
+        vLine[1].position = sf::Vector2f(x_screen, height);
+        vLine[0].color = vLine[1].color = gridColor;
+        window.draw(vLine);
+    }
+
+    float mathHeight = height / scale; 
+    float minY = center.y - (mathHeight / 2.0f);
+    float maxY = center.y + (mathHeight / 2.0f);
+    
+    int startY = static_cast<int>(std::ceil(minY));
+    int endY = static_cast<int>(std::floor(maxY));
+
+    for (int i = startY; i <= endY; ++i) {
+        float y_screen = midY - ((i - center.y) * scale);
+        sf::VertexArray hLine(sf::PrimitiveType::Lines, 2);
+        hLine[0].position = sf::Vector2f(0, y_screen);
+        hLine[1].position = sf::Vector2f(width, y_screen);
+        hLine[0].color = hLine[1].color = gridColor;
+        window.draw(hLine);
+    }
+
+    float originX_screen = (0.0f - range.x) * scale;
+    float originY_screen = midY + (center.y * scale);
 
     sf::VertexArray xAxis(sf::PrimitiveType::Lines, 2);
-    xAxis[0].position = sf::Vector2f(0, midY);
-    xAxis[1].position = sf::Vector2f(static_cast<float>(width), midY);
+    xAxis[0].position = sf::Vector2f(0, originY_screen);
+    xAxis[1].position = sf::Vector2f(static_cast<float>(width), originY_screen);
     xAxis[0].color = xAxis[1].color = sf::Color::Black;
 
     sf::VertexArray yAxis(sf::PrimitiveType::Lines, 2);
-    yAxis[0].position = sf::Vector2f(midX, 0);
-    yAxis[1].position = sf::Vector2f(midX, static_cast<float>(height));
+    yAxis[0].position = sf::Vector2f(originX_screen, 0);
+    yAxis[1].position = sf::Vector2f(originX_screen, static_cast<float>(height));
     yAxis[0].color = yAxis[1].color = sf::Color::Black;
 
     window.draw(xAxis);
     window.draw(yAxis);
 
-    const auto& points = currentFunction.getPoints(); 
-    if (points.size() > 1) {
-        sf::VertexArray plot(sf::PrimitiveType::Lines, 2 * (points.size() - 1));
-        size_t vertexIndex = 0;
+    const float step = (range.y - range.x) / width;
 
-        for (size_t i = 0; i < points.size() - 1; ++i) {
-            float x1 = midX + (static_cast<float>(points[i].getX()) * scale);
-            float y1 = midY - (static_cast<float>(points[i].getY()) * scale);
-
-            float x2 = midX + (static_cast<float>(points[i+1].getX()) * scale);
-            float y2 = midY - (static_cast<float>(points[i+1].getY()) * scale);
-
-            if ((y1 < 0 && y2 < 0) || (y1 > height && y2 > height)) {
-                continue; 
-            }
-
-            plot[vertexIndex].position = {x1, y1};
-            plot[vertexIndex].color = sf::Color::Red;
-            
-            plot[vertexIndex + 1].position = {x2, y2};
-            plot[vertexIndex + 1].color = sf::Color::Red;
-
-            vertexIndex += 2;
+    for (const auto &f : functions) {
+        
+        sf::Color plotColor = sf::Color::Red;
+        if (dynamic_cast<TrigonometricFunction*>(f.get())) {
+            plotColor = sf::Color::Blue;
+        } else if (dynamic_cast<ParsedFunction*>(f.get())) {
+            plotColor = sf::Color::Green;
+        } else if (dynamic_cast<ExponentialFunction*>(f.get())) {
+            plotColor = sf::Color::Magenta;
         }
-        window.draw(plot);
+
+        std::vector<sf::Vertex> linePoints;
+
+        auto drawAndClear = [&]() {
+            if (linePoints.size() > 1) {
+                sf::VertexArray plot(sf::PrimitiveType::LineStrip, linePoints.size());
+                for(size_t i = 0; i < linePoints.size(); ++i) {
+                    plot[i] = linePoints[i];
+                }
+                window.draw(plot);
+            }
+            linePoints.clear(); 
+        };
+
+        float lastY = 0.0f;
+
+        for (float mathX = range.x; mathX <= range.y; mathX += step) {
+            try {
+                double mathY = f->evaluate(mathX); 
+
+                float x_screen = (mathX - range.x) * scale;
+                float y_screen = midY - ((static_cast<float>(mathY) - center.y) * scale);
+
+                if (!linePoints.empty() && std::abs(y_screen - lastY) > height) {
+                    drawAndClear(); 
+                }
+
+                if (y_screen >= -100 && y_screen <= height + 100) {
+                    linePoints.push_back(sf::Vertex{sf::Vector2f(x_screen, y_screen), plotColor});
+                }
+                
+                lastY = y_screen; 
+
+            } catch (const DomainException& e) {
+                drawAndClear(); 
+                continue;
+            }
+        }
+
+        drawAndClear();
     }
+
     window.display();
 }
 
@@ -102,15 +228,4 @@ void Graph::run()
         /// Draw
         render();
     }
-}
-
-std::ostream& operator<<(std::ostream &out, const Graph &g)
-{
-    out << g.currentFunction << "\n" <<  g.a << "\n" << g.scale;
-    return out;
-}
-
-Graph::~Graph()
-{
-
 }

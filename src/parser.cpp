@@ -1,8 +1,9 @@
 #include <cctype>
-#include <parser.hpp>
 #include <cmath>
 #include <stdexcept>
 #include <ostream>
+#include "parser.hpp"
+#include "exceptions.hpp"
 
 Parser::Parser(std::string s) : expression(std::move(s))
 {}
@@ -41,7 +42,7 @@ double Parser::parseTerm(size_t &i, double x) // NOLINT(misc-no-recursion)
         if (op == '*') {
             ans *= nextFactor;
         } else {
-            if (std::abs(nextFactor) < 1e-9) return std::nan("");
+            if (std::abs(nextFactor) < 1e-9) throw DomainException(x);
             ans /= nextFactor;
         }
     }
@@ -52,7 +53,7 @@ double Parser::parseFactor(size_t &i, double x) // NOLINT(misc-no-recursion)
 { 
     while (i < expression.length() && std::isspace(expression[i])) i++;
 
-    if (i >= expression.length()) throw std::runtime_error("Unexpected end of expression");
+    if (i >= expression.length()) throw ParseErrorException("Unexpected end of expression");
 
     if (expression[i] == 'x') {
         i++;
@@ -66,7 +67,7 @@ double Parser::parseFactor(size_t &i, double x) // NOLINT(misc-no-recursion)
         if (i < expression.length() && expression[i] == ')') {
             i++; 
         } else {
-            throw std::runtime_error("Missing closing parenthesis");
+            throw ParseErrorException("Missing closing parenthesis");
         }
         return ans;
     } 
@@ -75,13 +76,13 @@ double Parser::parseFactor(size_t &i, double x) // NOLINT(misc-no-recursion)
     bool hasDecimal = false;
     while (i < expression.length() && (std::isdigit(expression[i]) || expression[i] == '.')) {
         if (expression[i] == '.') {
-            if (hasDecimal) throw std::runtime_error("Multiple decimal points in number");
+            if (hasDecimal) throw ParseErrorException("Multiple decimal points in number");
             hasDecimal = true;
         }
         i++;
     }
 
-    if (start == i) throw std::runtime_error("Expected a number or 'x' at position " + std::to_string(i));
+    if (start == i) throw ParseErrorException("Expected a number or 'x' at position " + std::to_string(i));
     
     return std::stod(expression.substr(start, i - start));
 }
@@ -93,9 +94,21 @@ double Parser::evaluate(double x)
     
     while (i < expression.length() && std::isspace(expression[i])) i++;
     if (i < expression.length()) {
-        throw std::runtime_error("Invalid expression: trailing characters at " + std::to_string(i));
+        throw ParseErrorException("Invalid expression: trailing characters at " + std::to_string(i));
     }
     return result;
+}
+
+bool Parser::isValid(const std::string &s)
+{
+    int balance = 0;
+    for (char c : s) {
+        if (c == '(') balance++;
+        else if (c == ')') balance--;
+        
+        if (balance < 0) return false; 
+    }
+    return balance == 0; 
 }
 
 std::string Parser::getExpression() const
