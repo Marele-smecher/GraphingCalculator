@@ -5,6 +5,7 @@
 #include <function.hpp>
 #include <iostream>
 #include <ostream>
+#include <cmath>
 
 Graph::Graph(uint32_t w, uint32_t h, double a, const std::string &title)
     : window(sf::VideoMode({w, h}), title, sf::State::Windowed),
@@ -117,6 +118,36 @@ void Graph::render()
     
     scale = width / (range.y - range.x);
 
+    sf::Color gridColor(220, 220, 220); 
+
+    int startX = static_cast<int>(std::ceil(range.x));
+    int endX = static_cast<int>(std::floor(range.y));
+    
+    for (int i = startX; i <= endX; ++i) {
+        float x_screen = (i - range.x) * scale;
+        sf::VertexArray vLine(sf::PrimitiveType::Lines, 2);
+        vLine[0].position = sf::Vector2f(x_screen, 0);
+        vLine[1].position = sf::Vector2f(x_screen, height);
+        vLine[0].color = vLine[1].color = gridColor;
+        window.draw(vLine);
+    }
+
+    float mathHeight = height / scale; 
+    float minY = center.y - (mathHeight / 2.0f);
+    float maxY = center.y + (mathHeight / 2.0f);
+    
+    int startY = static_cast<int>(std::ceil(minY));
+    int endY = static_cast<int>(std::floor(maxY));
+
+    for (int i = startY; i <= endY; ++i) {
+        float y_screen = midY - ((i - center.y) * scale);
+        sf::VertexArray hLine(sf::PrimitiveType::Lines, 2);
+        hLine[0].position = sf::Vector2f(0, y_screen);
+        hLine[1].position = sf::Vector2f(width, y_screen);
+        hLine[0].color = hLine[1].color = gridColor;
+        window.draw(hLine);
+    }
+
     float originX_screen = (0.0f - range.x) * scale;
     float originY_screen = midY + (center.y * scale);
 
@@ -140,6 +171,8 @@ void Graph::render()
         sf::Color plotColor = sf::Color::Red;
         if (dynamic_cast<TrigonometricFunction*>(f)) {
             plotColor = sf::Color::Blue;
+        } else if (dynamic_cast<ParsedFunction*>(f)) {
+            plotColor = sf::Color::Green;
         }
 
         std::vector<sf::Vertex> linePoints;
@@ -152,7 +185,7 @@ void Graph::render()
                 float y_screen = midY - ((static_cast<float>(mathY) - center.y) * scale);
 
                 if (y_screen >= -100 && y_screen <= height + 100) {
-                    linePoints.emplace_back(sf::Vector2f(x_screen, y_screen), plotColor);
+                    linePoints.push_back(sf::Vertex(sf::Vector2f(x_screen, y_screen), plotColor));
                 }
             } catch (const DomainException& e) {
                 continue;
