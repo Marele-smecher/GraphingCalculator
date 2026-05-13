@@ -203,7 +203,7 @@ void Graph::render()
                 }
 
                 if (y_screen >= -100 && y_screen <= height + 100) {
-                    linePoints.push_back(sf::Vertex(sf::Vector2f(x_screen, y_screen), plotColor));
+                    linePoints.push_back(sf::Vertex{sf::Vector2f(x_screen, y_screen), plotColor});
                 }
                 
                 lastY = y_screen; 
