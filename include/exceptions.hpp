@@ -3,7 +3,7 @@
 #include <exception>
 #include <string>
 
-class GraphException : std::exception
+class GraphException : public std::exception
 {
 protected:
     std::string message;
@@ -12,22 +12,22 @@ public:
     [[nodiscard]] const char* what() const noexcept override;
 };
 
-class ParseErrorException : GraphException
+class ParseErrorException : public GraphException
 {
 public:
     explicit ParseErrorException(const std::string &message);
 };
 
-class DomainException : GraphException
+class DomainException : public GraphException
 {
 public:
-    explicit DomainException(const std::string &message);
+    explicit DomainException(double x);
 };
 
-class RenderInitException : GraphException
+class RenderInitException : public GraphException
 {
 public:
-    explicit RenderInitException(const std::string &message);
+    explicit RenderInitException();
 };
 
 /***
