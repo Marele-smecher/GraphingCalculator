@@ -1,64 +1,79 @@
-#include <function.hpp>
+#include "function.hpp"
+#include <cmath>
 #include <iostream>
 
-Function::Function(const std::string &s, double a) : parser(s), points(), expressionName(s), a(a)
+int MathFunction::totalFunctions = 0; 
+
+MathFunction::MathFunction() 
 {
-    generatePoints(-a, a, 0.01);
+    totalFunctions++;
 }
 
-Function::Function(const Function &F) 
-    : parser(F.parser), 
-      points(F.points), 
-      expressionName(F.expressionName), 
-      a(F.a)
+std::ostream& operator<<(std::ostream& out, const MathFunction& f) 
 {
-}
-
-void Function::clearPoints()
-{
-    points.clear();
-}
-
-std::vector<Point> Function::getPoints() const
-{
-    return points;
-}
-
-Function& Function::operator=(const Function &f)
-{
-    if (this != &f) {
-        this->expressionName = f.expressionName;
-        this->parser = f.parser;
-        this->points = f.points;
-    }
-    return *this;
-}
-
-std::ostream& operator<<(std::ostream &out, const Function &F)
-{
-    out << "Function: " << F.parser << "\nPoints:\n";
-    for (const auto& p : F.points) {
-        out << p << "\n"; 
-    }
+    f.print(out); 
     return out;
 }
 
-void Function::generatePoints(double minX, double maxX, double step)
+ParsedFunction::ParsedFunction(const std::string &expr) 
+    : MathFunction(), p(expr), expressionName(expr) {}
+
+double ParsedFunction::evaluate(double x) const 
 {
-    points.clear();
+    return const_cast<Parser&>(p).evaluate(x);
+}
 
-    const int numSteps = static_cast<int>((maxX - minX) / step) + 1;
+MathFunction* ParsedFunction::clone() const 
+{
+    return new ParsedFunction(*this);
+}
 
-    for (int i = 0; i < numSteps; ++i) {
-        double x = minX + i * step;         
-        double y = parser.evaluate(x);
-        points.emplace_back(Point(x, y));  
+void ParsedFunction::print(std::ostream& os) const 
+{
+    os << "f(x) = " << expressionName << " (Expresie parsata)";
+}
+
+PolynomialFunction::PolynomialFunction(std::vector<double> coefficients) 
+    : MathFunction(), coeff(std::move(coefficients)) {}
+
+double PolynomialFunction::evaluate(double x) const 
+{
+    double result = 0;
+    double currentX = 1.0;
+    
+    for (double c : coeff) {
+        result += c * currentX;
+        currentX *= x;
     }
+    return result;
 }
 
-Function::~Function()
-{
-    std::cout << "Destructing function with expression: " << expressionName << "\n";
+MathFunction* PolynomialFunction::clone() const {
+    return new PolynomialFunction(*this);
 }
 
+void PolynomialFunction::print(std::ostream& os) const {
+    os << "Polinom de grad " << (coeff.empty() ? 0 : coeff.size() - 1);
+}
 
+TrigonometricFunction::TrigonometricFunction(std::string type, double amp, double freq)
+    : MathFunction(), functionType(std::move(type)), amplitude(amp), frequency(freq) {}
+
+double TrigonometricFunction::evaluate(double x) const {
+    if (functionType == "sin") {
+        return amplitude * std::sin(frequency * x);
+    } else if (functionType == "cos") {
+        return amplitude * std::cos(frequency * x);
+    } else if (functionType == "tan") {
+        return amplitude * std::tan(frequency * x);
+    }
+    return 0.0; 
+}
+
+MathFunction* TrigonometricFunction::clone() const {
+    return new TrigonometricFunction(*this);
+}
+
+void TrigonometricFunction::print(std::ostream& os) const {
+    os << amplitude << " * " << functionType << "(" << frequency << " * x)";
+}
