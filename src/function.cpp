@@ -82,3 +82,22 @@ void TrigonometricFunction::print(std::ostream& os) const
 {
     os << amplitude << " * " << functionType << "(" << frequency << " * x)";
 }
+
+ExponentialFunction::ExponentialFunction(double b, double exp)
+    : MathFunction(), base(b), exponent(exp) {}
+
+double ExponentialFunction::evaluate(double x) const 
+{
+    // Calculeaza base la puterea (exponent * x)
+    return std::pow(base, exponent * x);
+}
+
+MathFunction* ExponentialFunction::clone() const 
+{
+    return new ExponentialFunction(*this);
+}
+
+void ExponentialFunction::print(std::ostream& os) const 
+{
+    os << base << "^(" << exponent << " * x)";
+}

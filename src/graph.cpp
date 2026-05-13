@@ -172,6 +172,8 @@ void Graph::render()
             plotColor = sf::Color::Blue;
         } else if (dynamic_cast<ParsedFunction*>(f)) {
             plotColor = sf::Color::Green;
+        } else if (dynamic_cast<ExponentialFunction*>(f)) {
+            plotColor = sf::Color::Magenta;
         }
 
         std::vector<sf::Vertex> linePoints;

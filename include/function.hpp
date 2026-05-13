@@ -58,12 +58,15 @@ public:
     MathFunction* clone() const override;
 };
 
-/*class ExponentialFunction : public MathFunction
+class ExponentialFunction : public MathFunction
 {
     double base, exponent;
+protected:
+    void print(std::ostream& os) const override;
 public:
+    ExponentialFunction(double b, double exp);
+
     [[nodiscard]] double evaluate(double x) const override;
     [[nodiscard]] MathFunction* clone() const override;
-    void print(std::ostream& os) const override;
-};*/
+};
 

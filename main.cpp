@@ -20,6 +20,10 @@ int main()
         std::cout << "Enter a valid expression (only '(', ')', '+', '-', '*', '/', 'x'):\n";
         std::getline(std::cin, expr);
 
+        if (!Parser::isValid(expr)) {
+            throw ParseErrorException("Invalid expresion!");
+        }
+
         std::cout << "Enter how big you want the graph to be:\n";
         std::cout << "You'll still be able to adjust the size with NumpadPlus and NumpadMinus\n";
         std::getline(std::cin, line);
@@ -34,6 +38,7 @@ int main()
         grapher.addFunction(new ParsedFunction(expr));
         grapher.addFunction(new PolynomialFunction({-5.0, 0.0, 1.0}));
         grapher.addFunction(new TrigonometricFunction("sin", 2.0, 1.0));
+        grapher.addFunction(new ExponentialFunction(2.718f, 1.0f));
         
         std::cout << grapher << "\n";
         
