@@ -177,6 +177,19 @@ void Graph::render()
 
         std::vector<sf::Vertex> linePoints;
 
+        auto drawAndClear = [&]() {
+            if (linePoints.size() > 1) {
+                sf::VertexArray plot(sf::PrimitiveType::LineStrip, linePoints.size());
+                for(size_t i = 0; i < linePoints.size(); ++i) {
+                    plot[i] = linePoints[i];
+                }
+                window.draw(plot);
+            }
+            linePoints.clear(); 
+        };
+
+        float lastY = 0.0f;
+
         for (float mathX = range.x; mathX <= range.y; mathX += step) {
             try {
                 double mathY = f->evaluate(mathX); 
@@ -184,21 +197,23 @@ void Graph::render()
                 float x_screen = (mathX - range.x) * scale;
                 float y_screen = midY - ((static_cast<float>(mathY) - center.y) * scale);
 
+                if (!linePoints.empty() && std::abs(y_screen - lastY) > height) {
+                    drawAndClear(); 
+                }
+
                 if (y_screen >= -100 && y_screen <= height + 100) {
                     linePoints.push_back(sf::Vertex(sf::Vector2f(x_screen, y_screen), plotColor));
                 }
+                
+                lastY = y_screen; 
+
             } catch (const DomainException& e) {
+                drawAndClear(); 
                 continue;
             }
         }
 
-        if (linePoints.size() > 1) {
-            sf::VertexArray plot(sf::PrimitiveType::LineStrip, linePoints.size());
-            for(size_t i = 0; i < linePoints.size(); ++i) {
-                plot[i] = linePoints[i];
-            }
-            window.draw(plot);
-        }
+        drawAndClear();
     }
 
     window.display();
