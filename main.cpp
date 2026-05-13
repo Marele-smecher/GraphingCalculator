@@ -3,6 +3,7 @@
 #include <string>
 #include "graph.hpp"
 #include "exceptions.hpp"
+#include "function.hpp"
 
 constexpr size_t SCR_WIDTH = 800;
 constexpr size_t SCR_HEIGHT = 600;
@@ -38,10 +39,13 @@ int main()
         
         grapher.run();
     } catch (const GraphException& e) { // Prindem excepțiile din ierarhia noastră
-        std::cerr << "\n[Eroare Interna Grafe]: " << e.what() << "\n";
+        std::cerr << "\n[Eroare Interna Grafic]: " << e.what() << "\n";
     } catch (const std::exception& e) { // Prindem orice altceva (ex. std::stod fails)
         std::cerr << "\n[Eroare Generala]: " << e.what() << "\n";
     }
+
+    std::cout << "\nTotal number of functions: " 
+              << MathFunction::totalFunctions << "\n";
 
     return 0;
 }

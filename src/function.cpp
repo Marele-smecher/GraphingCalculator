@@ -48,18 +48,21 @@ double PolynomialFunction::evaluate(double x) const
     return result;
 }
 
-MathFunction* PolynomialFunction::clone() const {
+MathFunction* PolynomialFunction::clone() const 
+{
     return new PolynomialFunction(*this);
 }
 
-void PolynomialFunction::print(std::ostream& os) const {
+void PolynomialFunction::print(std::ostream& os) const 
+{
     os << "Polinom de grad " << (coeff.empty() ? 0 : coeff.size() - 1);
 }
 
 TrigonometricFunction::TrigonometricFunction(std::string type, double amp, double freq)
     : MathFunction(), functionType(std::move(type)), amplitude(amp), frequency(freq) {}
 
-double TrigonometricFunction::evaluate(double x) const {
+double TrigonometricFunction::evaluate(double x) const 
+{
     if (functionType == "sin") {
         return amplitude * std::sin(frequency * x);
     } else if (functionType == "cos") {
@@ -70,10 +73,12 @@ double TrigonometricFunction::evaluate(double x) const {
     return 0.0; 
 }
 
-MathFunction* TrigonometricFunction::clone() const {
+MathFunction* TrigonometricFunction::clone() const 
+{
     return new TrigonometricFunction(*this);
 }
 
-void TrigonometricFunction::print(std::ostream& os) const {
+void TrigonometricFunction::print(std::ostream& os) const 
+{
     os << amplitude << " * " << functionType << "(" << frequency << " * x)";
 }

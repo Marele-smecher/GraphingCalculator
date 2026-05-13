@@ -6,6 +6,7 @@
 
 class MathFunction
 {
+public:
     static int totalFunctions; 
 protected:
     virtual void print(std::ostream& os) const = 0;
@@ -53,8 +54,8 @@ protected:
 public:
     TrigonometricFunction(std::string type, double amp, double freq);
 
-    double evaluate(double x) const;
-    MathFunction* clone() const;
+    double evaluate(double x) const override;
+    MathFunction* clone() const override;
 };
 
 /*class ExponentialFunction : public MathFunction
