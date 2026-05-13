@@ -113,7 +113,6 @@ void Graph::render()
     sf::Vector2u size = window.getSize();
     const auto width = static_cast<float>(size.x);
     const auto height = static_cast<float>(size.y);
-    const float midX = width / 2.0f;
     const float midY = height / 2.0f;
     
     scale = width / (range.y - range.x);
