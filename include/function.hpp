@@ -58,7 +58,7 @@ public:
     MathFunction* clone() const override;
 };
 
-class ExponentialFunction : public MathFunction
+/*class ExponentialFunction : public MathFunction
 {
     double base, exponent;
 protected:
@@ -69,4 +69,4 @@ public:
     [[nodiscard]] double evaluate(double x) const override;
     [[nodiscard]] MathFunction* clone() const override;
 };
-
+*/
