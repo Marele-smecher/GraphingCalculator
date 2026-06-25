@@ -4,8 +4,6 @@
 #include <vector>
 #include "function.hpp"
 
-// --- DESIGN PATTERN 2: SIMPLE FACTORY ---
-// Izolează crearea obiectelor matematice polimorfice de restul aplicației
 class FunctionFactory {
 public:
     static MathFunction* createParsed(const std::string& expr) {
@@ -26,24 +24,18 @@ public:
 };
 
 
-// --- DESIGN PATTERN 1: SINGLETON ---
-// Garantează că există o singură instanță a aplicației și oferă un punct global de acces
 class CalculatorApp {
 private:
-    // Constructor privat ca să blocăm instanțierea din exterior
     CalculatorApp() = default;
 
-    // Ștergem constructorul de copiere și operatorul de atribuire ca să evităm duplicarea
     CalculatorApp(const CalculatorApp&) = delete;
     CalculatorApp& operator=(const CalculatorApp&) = delete;
 
 public:
-    // Metoda statică pentru a obține singura instanță validă (Meyers Singleton)
     static CalculatorApp& getInstance() {
         static CalculatorApp instance;
         return instance;
     }
 
-    // Funcția principală care pornește execuția și înglobează logica mare
     void run();
 };
