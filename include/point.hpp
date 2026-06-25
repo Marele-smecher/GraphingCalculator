@@ -2,16 +2,17 @@
 
 #include <ostream>
 
+template <typename T>
 class Point
 {
-    double x, y;
+    T x, y;
 public:
-    explicit Point(double x = 0,  double y = 0);
+    explicit Point(T x = 0,  T y = 0);
     Point(const Point &p);
 
-    [[nodiscard]] double getX() const;
-    [[nodiscard]] double getY() const;
+    [[nodiscard]] T getX() const;
+    [[nodiscard]] T getY() const;
 
-    friend std::ostream& operator<<(std::ostream &out, const Point &p);
-    Point& operator=(const Point &p);
+    friend std::ostream& operator<<(std::ostream &out, const Point<T> &p);
+    Point<T>& operator=(const Point<T> &p);
 };
