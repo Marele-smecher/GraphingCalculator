@@ -30,10 +30,8 @@ void CalculatorApp::run() {
         constexpr size_t SCR_WIDTH = 800;
         constexpr size_t SCR_HEIGHT = 600;
 
-        // Inițializăm graful cu dimensiunile dorite
         Graph grapher(SCR_WIDTH, SCR_HEIGHT, a, "Graphing Calculator");
         
-        // În loc de new direct, folosim Factory-ul nostru curat!
         grapher.addFunction(FunctionFactory::createParsed(expr));
         grapher.addFunction(FunctionFactory::createPolynomial({-5.0, 0.0, 1.0}));
         grapher.addFunction(FunctionFactory::createTrigonometric("sin", 2.0, 1.0));
@@ -41,7 +39,6 @@ void CalculatorApp::run() {
         
         std::cout << grapher << "\n";
         
-        // Pornim loop-ul SFML
         grapher.run();
 
     } catch (const GraphException& e) { 
@@ -50,7 +47,6 @@ void CalculatorApp::run() {
         std::cerr << "\n[Eroare Generala]: " << e.what() << "\n";
     }
 
-    // Afișăm statistica la final, apelând variabila statică din clasa de bază
     std::cout << "\nTotal number of functions: " 
               << MathFunction::totalFunctions << "\n";
 }
