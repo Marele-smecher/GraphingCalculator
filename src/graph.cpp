@@ -1,5 +1,7 @@
 #include "graph.hpp"
 #include "exceptions.hpp"
+#include "point.hpp"
+#include "utils.hpp"
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Window/Keyboard.hpp>
 #include <function.hpp>
@@ -66,8 +68,10 @@ void Graph::handleInput()
             window.close();
         } else if (const auto *keyPressed = event->getIf<sf::Event::KeyPressed>()) {
             float movWidth = (range.y - range.x);
-            float moveSpeed = movWidth * 0.05f;
 
+            movWidth = clamp<float>(movWidth, 0.5f, 1000.0f); 
+
+            float moveSpeed = movWidth * 0.05f;
             if  (keyPressed->scancode == sf::Keyboard::Scancode::Escape) {
                 window.close();
             } else if (keyPressed->scancode == sf::Keyboard::Scancode::NumpadPlus) {
@@ -91,14 +95,10 @@ void Graph::handleInput()
                 center.x -= moveSpeed;
             } else if (keyPressed->scancode == sf::Keyboard::Scancode::Down) {
                 center.y -= moveSpeed;
+            } else if (keyPressed->scancode == sf::Keyboard::Scancode::Space) {
+                center.x = 0, center.y = 0;
+                range.x = -10, range.y = 10;
             }
-            
-            /*
-                Right,          //!< Keyboard Right Arrow key
-    Left,           //!< Keyboard Left Arrow key
-    Down,           //!< Keyboard Down Arrow key
-    Up,             //!< Keyboard Up Arrow key
-*/
         }
     }
 }
@@ -190,21 +190,25 @@ void Graph::render()
 
         for (float mathX = range.x; mathX <= range.y; mathX += step) {
             try {
-                double mathY = f->evaluate(mathX); 
+                double rawMathY = f->evaluate(mathX);
+                double mathY = clamp<double>(rawMathY, -10000.0, 10000.0); 
 
-                float x_screen = (mathX - range.x) * scale;
-                float y_screen = midY - ((static_cast<float>(mathY) - center.y) * scale);
+                Point<double> lPoint(mathX, mathY);
 
-                if (!linePoints.empty() && std::abs(y_screen - lastY) > height) {
+                float x_screen = (lPoint.getX() - range.x) * scale;
+                float y_screen = midY - ((static_cast<float>(lPoint.getY()) - center.y) * scale);
+
+                Point<int> screenPoint(static_cast<int>(x_screen), static_cast<int>(y_screen));
+
+                if (!linePoints.empty() && std::abs(screenPoint.getY() - lastY) > height) {
                     drawAndClear(); 
                 }
 
-                if (y_screen >= -100 && y_screen <= height + 100) {
+                if (screenPoint.getY() >= -100 && screenPoint.getY() <= height + 100) {
                     linePoints.push_back(sf::Vertex{sf::Vector2f(x_screen, y_screen), plotColor});
                 }
                 
-                lastY = y_screen; 
-
+                lastY = static_cast<float>(screenPoint.getY());
             } catch (const DomainException& e) {
                 drawAndClear(); 
                 continue;

@@ -1,35 +1,34 @@
 #include "point.hpp"
 
-Point::Point(double x, double y) : x(x), y(y) 
+template <typename T>
+Point<T>::Point(T x, T y) : x(x), y(y) 
 {}
 
-Point::Point(const Point &p) :
+template <typename T>
+Point<T>::Point(const Point<T> &p) :
     x(p.x), y(p.y)
 {}
 
-double Point::getX() const
+template <typename T>
+T Point<T>::getX() const
 {
     return x;
 }
 
-double Point::getY() const
+template <typename T>
+T Point<T>::getY() const
 {
     return y;
 }
 
-std::ostream& operator<<(std::ostream &out, const Point &p)
-{
-    out << p.x << " " << p.y;
-    return out;
-}
-
-Point& Point::operator=(const Point &p)
+template <typename T>
+Point<T>& Point<T>::operator=(const Point<T> &p)
 {
     if (this == &p) return *this;
-    this->x = p.x; this->y = p.y;
+    this->x = p.x; 
+    this->y = p.y;
     return *this;
 }
 
-
-
-
+template class Point<double>;
+template class Point<int>;

@@ -1,6 +1,5 @@
 #pragma once
 
-#include "point.hpp"
 #include "parser.hpp"
 #include <vector>
 
@@ -54,8 +53,8 @@ protected:
 public:
     TrigonometricFunction(std::string type, double amp, double freq);
 
-    double evaluate(double x) const override;
-    MathFunction* clone() const override;
+    [[nodiscard]] double evaluate(double x) const override;
+    [[nodiscard]] MathFunction* clone() const override;
 };
 
 class ExponentialFunction : public MathFunction
