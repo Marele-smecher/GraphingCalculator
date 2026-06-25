@@ -67,6 +67,7 @@ add_executable(${MAIN_EXECUTABLE_NAME}
     src/parser.cpp
     src/point.cpp
     src/exceptions.cpp
+    src/application.cpp
 )
 
 # NOTE: Add all defined targets (e.g. executables, libraries, etc. )
